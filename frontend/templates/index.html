@@ -1,1 +1,419 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Sub Tracker</title>
+
+    <!-- CSS -->
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> -->
+     
+    <link rel="stylesheet" href="../static/css/style.css">
+
+<body>
+
+    <div class="container">
+
+        <!-- ================= HEADER ================= -->
+
+        <header>
+
+            <div class="title-group">
+                <h1>AI Sub Tracker</h1>
+
+                <p>
+                    Visual subscription reminder for your AI tools.
+                </p>
+            </div>
+
+            <div class="header-actions">
+
+                <button id="theme-toggle">
+                    ☀️ Light Mode
+                </button>
+
+                <button
+                    id="add-custom-btn"
+                    class="primary">
+                    + Custom Sub
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= MAIN ================= -->
+
+        <main>
+
+            <!-- ================= STATS BAR ================= -->
+
+            <div class="stats-bar">
+
+                <div
+                    class="summary"
+                    id="summary-text">
+
+                    You have 0 active AI subscriptions.
+
+                </div>
+
+
+                <div class="actions-group">
+
+                    <button id="export-btn">
+                        📥 Export JSON
+                    </button>
+
+                    <button id="import-btn">
+                        📤 Import JSON
+                    </button>
+
+                    <button
+                        id="clear-btn"
+                        class="danger">
+
+                        Clear All Data
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Hidden file input for importing JSON -->
+
+            <input
+                type="file"
+                id="import-file"
+                accept=".json"
+                class="hidden"
+            >
+
+
+            <!-- ================= DASHBOARD ================= -->
+
+            <details
+                id="dashboard"
+                open>
+
+                <summary>
+                    Active Subscriptions Dashboard
+                </summary>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th data-sort="toolName">
+                                    Tool ↕
+                                </th>
+
+                                <th data-sort="plan">
+                                    Plan ↕
+                                </th>
+
+                                <th data-sort="renewalDate">
+                                    Renewal Date ↕
+                                </th>
+
+                                <th data-sort="daysRemaining">
+                                    Days Left ↕
+                                </th>
+
+                                <th>
+                                    Notes
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="dashboard-body">
+                            <!-- JavaScript will generate rows here -->
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </details>
+
+
+            <!-- ================= AI TOOLS GRID ================= -->
+
+            <div
+                class="grid"
+                id="tools-grid">
+
+                <!-- JavaScript will generate cards here -->
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- ================= MODAL ================= -->
+
+    <div
+        class="modal-overlay"
+        id="modal-overlay">
+
+        <div
+            class="modal"
+            id="modal">
+
+
+            <!-- ================= MODAL HEADER ================= -->
+
+            <div class="modal-header">
+
+                <h2 id="modal-title">
+
+                    <div
+                        class="icon-placeholder"
+                        id="modal-icon">
+                    </div>
+
+                    <span id="modal-tool-name-text">
+                        Tool Name
+                    </span>
+
+                </h2>
+
+
+                <button
+                    class="close-btn"
+                    id="close-modal">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+
+            <!-- ================= FORM ================= -->
+
+            <form id="sub-form">
+
+                <!-- Hidden values -->
+
+                <input
+                    type="hidden"
+                    id="tool-id"
+                >
+
+                <input
+                    type="hidden"
+                    id="tool-is-custom"
+                >
+
+
+                <!-- ================= CUSTOM TOOL NAME ================= -->
+
+                <div
+                    class="form-group hidden"
+                    id="custom-name-group">
+
+                    <label for="custom-tool-name">
+                        Tool Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="custom-tool-name"
+                        placeholder="e.g., Jasper, Leonardo..."
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ================= CUSTOM DOMAIN ================= -->
+
+                <div
+                    class="form-group hidden"
+                    id="custom-domain-group">
+
+                    <label for="custom-tool-domain">
+                        Website URL (Optional, to fetch logo)
+                    </label>
+
+                    <input
+                        type="text"
+                        id="custom-tool-domain"
+                        placeholder="e.g., jasper.ai"
+                    >
+
+                </div>
+
+
+                <!-- ================= PLAN ================= -->
+
+                <div class="form-group">
+
+                    <label for="plan">
+                        Plan Tier
+                    </label>
+
+                    <select
+                        id="plan"
+                        required>
+
+                        <option value="Free">
+                            Free
+                        </option>
+
+                        <option value="Plus">
+                            Plus
+                        </option>
+
+                        <option value="Pro">
+                            Pro
+                        </option>
+
+                        <option value="Team">
+                            Team
+                        </option>
+
+                        <option value="Max">
+                            Max
+                        </option>
+
+                        <option value="Enterprise">
+                            Enterprise
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ================= RENEWAL DATE ================= -->
+
+                <div class="form-group">
+
+                    <label for="renewal-date">
+                        Next Renewal Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="renewal-date"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ================= REMINDER ================= -->
+
+                <div class="form-group">
+
+                    <label for="reminder-lead">
+                        Reminder Lead Time
+                    </label>
+
+                    <select
+                        id="reminder-lead"
+                        required>
+
+                        <option value="0">
+                            Same day
+                        </option>
+
+                        <option value="1">
+                            1 day before
+                        </option>
+
+                        <option value="3">
+                            3 days before
+                        </option>
+
+                        <option value="7">
+                            1 week before
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- ================= NOTES ================= -->
+
+                <div class="form-group">
+
+                    <label for="notes">
+                        Notes (Optional)
+                    </label>
+
+                    <textarea
+                        id="notes"
+                        placeholder="e.g., Cancel if not used this month...">
+                    </textarea>
+
+                </div>
+
+
+                <!-- ================= MODAL ACTIONS ================= -->
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        id="delete-btn"
+                        class="danger hidden">
+
+                        Delete Sub
+
+                    </button>
+
+
+                    <button
+                        type="button"
+                        id="cancel-btn">
+
+                        Cancel
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="primary">
+
+                        Save Subscription
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="../static/js/script_main.js"></script>
+
+</body>
+
+</html>
